@@ -1,0 +1,445 @@
+@model AeroLinea.Models.Usuario
+@{
+    ViewData["Title"] = "Perfil de Usuario";
+    Layout = "_LayoutPerfil";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #e14a4a 0%, #ff6b6b 100%);
+        min-height: 100vh;
+        padding: 20px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-header {
+        background: #e14a4a !important;
+        border-radius: 15px 15px 0 0 !important;
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-floating > .form-control,
+    .form-floating > .form-control-plaintext {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 12px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+    }
+
+    .form-floating > .form-control:focus {
+        border-color: #e14a4a;
+        box-shadow: 0 0 0 0.2rem rgba(225, 74, 74, 0.25);
+    }
+
+    .form-floating > label {
+        padding: 12px;
+    }
+
+    .btn-primary {
+        background: #e14a4a;
+        border: none;
+        padding: 12px 30px;
+        font-size: 1.1em;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: #ff6b6b;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(225, 74, 74, 0.3);
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid #e14a4a;
+        color: #e14a4a;
+        padding: 12px 30px;
+        font-size: 1.1em;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #e14a4a;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(225, 74, 74, 0.3);
+    }
+
+    .form-check-input:checked {
+        background-color: #e14a4a;
+        border-color: #e14a4a;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .alert-success {
+        background: rgba(40, 167, 69, 0.95);
+        color: white;
+    }
+
+    .alert-danger {
+        background: rgba(220, 53, 69, 0.95);
+        color: white;
+    }
+
+    .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .titulo-panel {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .titulo-panel h1 {
+        color: white;
+        font-size: 2.5em;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    @@media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .titulo-panel h1 {
+            font-size: 2em;
+        }
+    }
+</style>
+
+<div style="position: fixed; top: 0; left: 0; right: 0; background: #f8f9fa; padding: 10px; z-index: 1000; border-bottom: 1px solid #dee2e6;">
+    <div style="display: flex; justify-content: flex-end; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="voiceToggle" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;">
+                    <span style="position: absolute; content: ''; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                </span>
+            </label>
+            <span style="color: #333; font-size: 14px;">Lector (Alt+V)</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="position: relative; display: inline-block; width: 60px; height: 34px;">
+                <input type="checkbox" id="voiceNavToggle" style="opacity: 0; width: 0; height: 0;">
+                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;">
+                    <span style="position: absolute; content: ''; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                </span>
+            </label>
+            <span style="color: #333; font-size: 14px;">Reconocimiento de voz</span>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4" style="margin-top: 60px;">
+    <div class="titulo-panel">
+        <h1>Mi Perfil</h1>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form asp-action="ActualizarPerfil" method="post" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="idUsuario" />
+                        <input type="hidden" asp-for="esAdmin" />
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="nombresUsuario" class="form-control" placeholder="Nombres" 
+                                           maxlength="30" minlength="5" required />
+                                    <label asp-for="nombresUsuario">Nombres</label>
+                                    <span asp-validation-for="nombresUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="apellidosUsuario" class="form-control" placeholder="Apellidos" 
+                                           maxlength="30" minlength="5" required />
+                                    <label asp-for="apellidosUsuario">Apellidos</label>
+                                    <span asp-validation-for="apellidosUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="nacimientoUsuario" class="form-control" type="date" 
+                                           max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                    <label asp-for="nacimientoUsuario">Fecha de Nacimiento</label>
+                                    <span asp-validation-for="nacimientoUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="telefonoUsuario" class="form-control" placeholder="Teléfono" 
+                                           maxlength="9" minlength="9" required />
+                                    <label asp-for="telefonoUsuario">Teléfono</label>
+                                    <span asp-validation-for="telefonoUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="identificacionUsuario" class="form-control" readonly />
+                                    <label asp-for="identificacionUsuario">DNI</label>
+                                    <span asp-validation-for="identificacionUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="correoUsuario" class="form-control" placeholder="Correo Electrónico" 
+                                           type="email" maxlength="30" required />
+                                    <label asp-for="correoUsuario">Correo Electrónico</label>
+                                    <span asp-validation-for="correoUsuario" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3 position-relative">
+                                    <input asp-for="contrasenaUsuario" class="form-control" type="password" 
+                                           placeholder="Contraseña" maxlength="20" minlength="6" id="contrasenaInput" />
+                                    <label asp-for="contrasenaUsuario">Contraseña</label>
+                                    <span asp-validation-for="contrasenaUsuario" class="text-danger"></span>
+                                    <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y" 
+                                            style="text-decoration: none; color: #6c757d;" onclick="togglePassword()">
+                                        <i class="bi bi-eye" id="toggleIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary me-md-2">
+                                <i class="bi bi-arrow-left me-2"></i>Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/vozPorTexto.js" asp-append-version="true"></script>
+    <script src="~/js/vozNavegacion.js" asp-append-version="true"></script>
+    <script>
+        // Validación del formulario
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const passwordInput = document.getElementById('contrasenaInput');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+
+        // Validación de nombres y apellidos (solo letras)
+        document.querySelectorAll('input[name="nombresUsuario"], input[name="apellidosUsuario"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+                if (this.value.length < 5) {
+                    this.setCustomValidity('El campo debe tener al menos 5 caracteres');
+                } else if (this.value.length > 30) {
+                    this.setCustomValidity('El campo no puede tener más de 30 caracteres');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        });
+
+        // Validación de teléfono
+        document.querySelector('input[name="telefonoUsuario"]').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').substring(0, 9);
+            if (this.value.length !== 9) {
+                this.setCustomValidity('El teléfono debe tener 9 dígitos');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Validación de contraseña
+        document.querySelector('input[name="contrasenaUsuario"]').addEventListener('input', function() {
+            const password = this.value;
+            if (!password) {
+                this.setCustomValidity('');
+                return;
+            }
+
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+            
+            if (password.length < 6) {
+                this.setCustomValidity('La contraseña debe tener al menos 6 caracteres');
+            } else if (password.length > 20) {
+                this.setCustomValidity('La contraseña no puede tener más de 20 caracteres');
+            } else if (!hasLetter || !hasNumber) {
+                this.setCustomValidity('La contraseña debe incluir letras y números');
+            } else if (!hasSpecial) {
+                this.setCustomValidity('La contraseña debe incluir al menos un carácter especial');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Validación del formulario antes de enviar
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const password = document.querySelector('input[name="contrasenaUsuario"]').value;
+            if (password) {
+                const hasLetter = /[a-zA-Z]/.test(password);
+                const hasNumber = /[0-9]/.test(password);
+                const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+                
+                if (password.length < 6 || password.length > 20 || !hasLetter || !hasNumber || !hasSpecial) {
+                    event.preventDefault();
+                }
+            }
+        });
+
+        // Auto-cerrar alertas después de 5 segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const voiceToggle = document.getElementById('voiceToggle');
+            const voiceNavToggle = document.getElementById('voiceNavToggle');
+
+            // Función para actualizar el estado visual del switch
+            function updateSwitchState(checkbox, isChecked) {
+                const slider = checkbox.nextElementSibling;
+                const circle = slider.firstElementChild;
+                if (isChecked) {
+                    slider.style.backgroundColor = '#e14a4a';
+                    circle.style.transform = 'translateX(26px)';
+                } else {
+                    slider.style.backgroundColor = '#ccc';
+                    circle.style.transform = 'translateX(0)';
+                }
+            }
+
+            // Recuperar estado guardado
+            const savedVoiceState = localStorage.getItem('voiceToggle');
+            const savedNavState = localStorage.getItem('voiceNavToggle');
+
+            if (savedVoiceState === 'true') {
+                voiceToggle.checked = true;
+                updateSwitchState(voiceToggle, true);
+            }
+
+            if (savedNavState === 'true') {
+                voiceNavToggle.checked = true;
+                updateSwitchState(voiceNavToggle, true);
+            }
+
+            // Eventos para los switches
+            voiceToggle.addEventListener('change', function() {
+                localStorage.setItem('voiceToggle', this.checked);
+                updateSwitchState(this, this.checked);
+            });
+
+            voiceNavToggle.addEventListener('change', function() {
+                localStorage.setItem('voiceNavToggle', this.checked);
+                updateSwitchState(this, this.checked);
+            });
+        });
+    </script>
+}

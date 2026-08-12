@@ -1,0 +1,2218 @@
+﻿@{
+    Layout = null;
+    var usuarios = ViewBag.Usuarios as List<AeroLinea.Models.Usuario>;
+    var consultas = ViewBag.Consultas as List<AeroLinea.Models.Consulta>;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administrador</title>
+    <link rel="stylesheet" href="~/css/Administrador/panelAdministrador.css" /> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #e14a4a;
+            --secondary-color: #ff6b6b;
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-panel {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            color: white;
+            font-size: 1.8em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .seccion {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .seccion h3 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(225, 74, 74, 0.2);
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 15px;
+            font-size: 1.1em;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            color: #555;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(225, 74, 74, 0.05);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 3px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(225, 74, 74, 0.3);
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            border: none;
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(225, 74, 74, 0.25);
+        }
+
+        /* Alert Styles */
+        .alert {
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .bg-success {
+            background: var(--success-color) !important;
+        }
+
+        .bg-warning {
+            background: var(--warning-color) !important;
+            color: #000;
+        }
+
+        /* Responsive Styles */
+        @@media (max-width: 768px) {
+            .admin-panel {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .seccion {
+                padding: 15px;
+            }
+
+            .table thead th {
+                font-size: 1em;
+                padding: 10px;
+            }
+
+            .table tbody td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Ajuste solo para los select de Gestión de Vuelos */
+        #modalRegistrarVuelo select.form-control {
+            height: 48px;
+            font-size: 16px;
+            line-height: 48px;
+        }
+
+        /* Estilos existentes */
+        .form-group select {
+            height: 38px;
+            padding: 8px 12px;
+            line-height: 1.5;
+        }
+    </style>
+
+    <script>
+        // JavaScript para controlar el cambio de secciones
+        function mostrarSeccion(seccion) {
+            var secciones = document.querySelectorAll('.seccion');
+            secciones.forEach(function(sec) {
+                sec.style.display = 'none';
+            });
+
+            document.getElementById(seccion).style.display = 'block';
+
+            if (seccion === 'pilotos') {
+                cargarPilotos();
+            } else if (seccion === 'flota') {
+                cargarFlota();
+            } else if (seccion === 'vuelos') {
+                cargarVuelos();
+                cargarAviones();
+                cargarPilotos();
+            }
+        }
+
+        window.onload = function() {
+            mostrarSeccion('usuarios');
+        };
+
+        let vueloId = 1;
+        function agregarVuelo() {
+            const ruta = document.getElementById('ruta').value;
+            const fecha = document.getElementById('fecha').value;
+            const hora = document.getElementById('hora').value;
+
+            if (ruta === "" || fecha === "" || hora === "") {
+                alert("Por favor complete todos los campos.");
+                return;
+            }
+            const nuevaFila = document.createElement('tr');
+            const celdaId = document.createElement('td');
+            celdaId.textContent = vueloId++;
+            const celdaRuta = document.createElement('td');
+            celdaRuta.textContent = ruta;
+            const celdaFecha = document.createElement('td');
+            celdaFecha.textContent = fecha;
+            const celdaHora = document.createElement('td');
+            celdaHora.textContent = hora;
+            const celdaEstado = document.createElement('td');
+            celdaEstado.textContent = 'Programado';
+            nuevaFila.appendChild(celdaId);
+            nuevaFila.appendChild(celdaRuta);
+            nuevaFila.appendChild(celdaFecha);
+            nuevaFila.appendChild(celdaHora);
+            nuevaFila.appendChild(celdaEstado);
+
+            document.getElementById('tabla-vuelos').querySelector('tbody').appendChild(nuevaFila)
+            document.getElementById('ruta').value = "";
+            document.getElementById('fecha').value = "";
+            document.getElementById('hora').value = "";
+            alert('Vuelo registrado con éxito!');          
+
+        }
+
+        function mostrarMensajeError(mensaje, elementoId) {
+            const elemento = document.getElementById(elementoId);
+            elemento.textContent = mensaje;
+            elemento.style.display = 'block';
+            setTimeout(() => {
+                elemento.style.display = 'none';
+            }, 5000);
+        }
+
+        function mostrarMensajeExito(mensaje) {
+            const elemento = document.getElementById('mensajeExito');
+            elemento.textContent = mensaje;
+            elemento.style.display = 'block';
+            setTimeout(() => {
+                elemento.style.display = 'none';
+            }, 5000);
+        }
+
+        function editarUsuario(id) {
+            document.getElementById('errorEdicion').style.display = 'none';
+            fetch('/Home/ObtenerUsuario/' + id)
+                .then(response => response.json())
+                .then(usuario => {
+                    if (!usuario.success) {
+                        mostrarMensajeError(usuario.message || 'Error al cargar usuario', 'errorEdicion');
+                        return;
+                    }
+                    document.getElementById('editId').value = usuario.idUsuario;
+                    document.getElementById('editNombres').value = usuario.nombresUsuario;
+                    document.getElementById('editApellidos').value = usuario.apellidosUsuario;
+                    document.getElementById('editNacimiento').value = usuario.fechaNacimiento;
+                    document.getElementById('editTelefono').value = usuario.telefonoUsuario;
+                    document.getElementById('editIdentificacion').value = usuario.identificacionUsuario;
+                    document.getElementById('editCorreo').value = usuario.correoUsuario;
+
+                    // Mostrar el modal usando Bootstrap 4
+                    $('#editarUsuarioModal').modal('show');
+                })
+                .catch(error => {
+                    mostrarMensajeError('Error al cargar usuario: ' + error.message, 'errorEdicion');
+                });
+        }
+
+        function guardarCambios() {
+            const usuario = {
+                idUsuario: document.getElementById('editId').value,
+                nombresUsuario: document.getElementById('editNombres').value,
+                apellidosUsuario: document.getElementById('editApellidos').value,
+                nacimientoUsuario: document.getElementById('editNacimiento').value,
+                telefonoUsuario: document.getElementById('editTelefono').value,
+                identificacionUsuario: document.getElementById('editIdentificacion').value,
+                correoUsuario: document.getElementById('editCorreo').value
+            };
+
+            // Enviar los cambios al servidor
+            fetch('/Home/ActualizarUsuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(usuario)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#editarUsuarioModal').modal('hide');
+                    mostrarMensajeExito('Usuario actualizado correctamente');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                } else {
+                    mostrarMensajeError(data.message);
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al actualizar el usuario');
+            });
+        }
+
+        function cambiarRol(id, esAdmin) {
+            document.getElementById('errorRol').style.display = 'none';
+            document.getElementById('cambiarRolId').value = id;
+            document.getElementById('cambiarRolActual').value = esAdmin;
+            $('#modalCambiarRol').modal('show');
+        }
+
+        function confirmarCambioRol() {
+            const id = document.getElementById('cambiarRolId').value;
+            const esAdmin = document.getElementById('cambiarRolActual').value === 'true';
+
+            fetch('/Home/CambiarRol', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id,
+                    esAdmin: !esAdmin
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#modalCambiarRol').modal('hide');
+                    mostrarMensajeExito(data.message || 'Rol actualizado correctamente');
+                    location.reload();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al cambiar el rol', 'errorRol');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al cambiar rol: ' + error.message, 'errorRol');
+            });
+        }
+
+        function eliminarUsuario(id) {
+            document.getElementById('errorEliminar').style.display = 'none';
+            document.getElementById('eliminarId').value = id;
+            $('#modalEliminar').modal('show');
+        }
+
+        function confirmarEliminacion() {
+            const id = document.getElementById('eliminarId').value;
+
+            fetch('/Home/EliminarUsuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#modalEliminar').modal('hide');
+                    mostrarMensajeExito(data.message || 'Usuario eliminado correctamente');
+                    location.reload();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al eliminar usuario', 'errorEliminar');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al eliminar usuario: ' + error.message, 'errorEliminar');
+            });
+        }
+
+        function marcarResuelto(id) {
+            document.getElementById('idConsulta').value = id;
+            document.getElementById('comentario').value = '';
+            $('#modalComentario').modal('show');
+        }
+
+        function confirmarResuelto() {
+            const id = document.getElementById('idConsulta').value;
+            const comentario = document.getElementById('comentario').value;
+
+            fetch('/Home/ActualizarEstadoConsulta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id,
+                    estado: 'Resuelto',
+                    comentarioConsulta: comentario
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    $('#modalComentario').modal('hide');
+                    mostrarMensajeExito('Consulta actualizada correctamente');
+                    location.reload();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al actualizar consulta', 'errorComentario');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al actualizar consulta: ' + error.message, 'errorComentario');
+            });
+        }
+
+        function marcarPendiente(id) {
+            fetch('/Home/ActualizarEstadoConsulta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id,
+                    estado: 'Pendiente'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarMensajeExito('Consulta marcada como pendiente');
+                    location.reload();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al actualizar estado', 'mensajeErrorConsultas');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al actualizar estado: ' + error.message, 'mensajeErrorConsultas');
+            });
+        }
+
+        function editarPiloto(idPiloto) {
+            fetch(`/Home/ObtenerPiloto/${idPiloto}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('nombrePiloto').value = data.data.nombrePiloto;
+                        document.getElementById('apellidoPiloto').value = data.data.apellidoPiloto;
+                        document.getElementById('nacimientoPiloto').value = data.data.nacimientoPiloto.split('T')[0];
+                        document.getElementById('telefonoPiloto').value = data.data.telefonoPiloto;
+                        document.getElementById('dniPiloto').value = data.data.dniPiloto;
+                        document.getElementById('licenciaPiloto').value = data.data.licenciaPiloto;
+                        document.getElementById('tipoLicPiloto').value = data.data.tipoLicPiloto;
+                        document.getElementById('fechaEmiLic').value = data.data.fechaEmiLic.split('T')[0];
+                        document.querySelector('#modalRegistrarPiloto .modal-title').textContent = 'Editar Piloto';
+                        document.querySelector('#modalRegistrarPiloto .btn-primary').textContent = 'Guardar Cambios';
+                        document.querySelector('#modalRegistrarPiloto').dataset.pilotoId = idPiloto;
+                        $('#modalRegistrarPiloto').modal('show');
+                    } else {
+                        alert(data.message || 'Error al cargar datos del piloto');
+                    }
+                })
+                .catch(error => {
+                    alert('Error al cargar datos del piloto: ' + error.message);
+                });
+        }
+
+        function eliminarPiloto(idPiloto) {
+            document.getElementById('eliminarPilotoId').value = idPiloto;
+            $('#modalEliminarPiloto').modal('show');
+        }
+
+        function confirmarEliminacionPiloto() {
+            const idPiloto = document.getElementById('eliminarPilotoId').value;
+            fetch(`/Home/EliminarPiloto/${idPiloto}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#modalEliminarPiloto').modal('hide');
+                    mostrarMensajeExito('Piloto eliminado exitosamente');
+                    cargarPilotos();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al eliminar piloto', 'errorEliminarPiloto');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al eliminar piloto: ' + error.message, 'errorEliminarPiloto');
+            });
+        }
+
+        function registrarPiloto() {
+            const pilotoId = document.querySelector('#modalRegistrarPiloto').dataset.pilotoId;
+            
+            // Asegurar que las fechas estén en formato ISO
+            const nacimiento = document.getElementById('nacimientoPiloto').value;
+            const fechaEmision = document.getElementById('fechaEmiLic').value;
+            
+            const piloto = {
+                nombrePiloto: document.getElementById('nombrePiloto').value,
+                apellidoPiloto: document.getElementById('apellidoPiloto').value,
+                nacimientoPiloto: nacimiento ? new Date(nacimiento).toISOString() : null,
+                telefonoPiloto: parseInt(document.getElementById('telefonoPiloto').value),
+                dniPiloto: document.getElementById('dniPiloto').value,
+                licenciaPiloto: document.getElementById('licenciaPiloto').value,
+                tipoLicPiloto: document.getElementById('tipoLicPiloto').value,
+                fechaEmiLic: fechaEmision ? new Date(fechaEmision).toISOString() : null
+            };
+
+            const url = pilotoId ? `/Home/ActualizarPiloto/${pilotoId}` : '/Home/RegistrarPiloto';
+            const method = pilotoId ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(piloto)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarMensajeExito(pilotoId ? 'Piloto actualizado exitosamente' : 'Piloto registrado exitosamente', 'mensajeExitoPiloto');
+                    document.getElementById('formRegistrarPiloto').reset();
+                    document.querySelector('#modalRegistrarPiloto .modal-title').textContent = 'Registrar Piloto';
+                    document.querySelector('#modalRegistrarPiloto .btn-primary').textContent = 'Registrar';
+                    document.querySelector('#modalRegistrarPiloto').dataset.pilotoId = '';
+                    $('#modalRegistrarPiloto').modal('hide');
+                    cargarPilotos();
+                } else {
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(key => {
+                            const errorElement = document.getElementById(`error${key.charAt(0).toUpperCase() + key.slice(1)}`);
+                            if (errorElement) {
+                                errorElement.textContent = data.errors[key];
+                                errorElement.style.display = 'block';
+                            }
+                        });
+                    } else {
+                        const errorElement = document.getElementById('errorRegistroPiloto');
+                        errorElement.textContent = data.message || 'Error al procesar la solicitud';
+                        errorElement.style.display = 'block';
+                    }
+                }
+            })
+            .catch(error => {
+                const errorElement = document.getElementById('errorRegistroPiloto');
+                errorElement.textContent = 'Error al procesar la solicitud: ' + error.message;
+                errorElement.style.display = 'block';
+            });
+        }
+
+        function cargarPilotos() {
+            console.log('Iniciando carga de pilotos...');
+            fetch('/Home/ObtenerPilotos')
+                .then(response => {
+                    console.log('Respuesta del servidor:', response);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Pilotos recibidos:", data);
+                    if (data.success) {
+                        // Cargar la tabla de pilotos
+                        const tbody = document.querySelector('#pilotos table tbody');
+                        if (tbody) {
+                            tbody.innerHTML = '';
+                            data.data.forEach(piloto => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td>${piloto.idPiloto}</td>
+                                    <td>${piloto.nombrePiloto}</td>
+                                    <td>${piloto.apellidoPiloto}</td>
+                                    <td>${new Date(piloto.nacimientoPiloto).toLocaleDateString()}</td>
+                                    <td>${piloto.telefonoPiloto}</td>
+                                    <td>${piloto.dniPiloto}</td>
+                                    <td>${piloto.licenciaPiloto}</td>
+                                    <td>${piloto.tipoLicPiloto}</td>
+                                    <td>${new Date(piloto.fechaEmiLic).toLocaleDateString()}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="editarPiloto(${piloto.idPiloto})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="eliminarPiloto(${piloto.idPiloto})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                `;
+                                tbody.appendChild(tr);
+                            });
+                        }
+
+                        // Cargar el selector de pilotos en el modal de vuelos
+                        const select = document.getElementById('idPiloto');
+                        console.log('Selector de pilotos encontrado:', select);
+                        if (select) {
+                            select.innerHTML = '<option value="">Seleccione un piloto</option>';
+                            data.data.forEach(piloto => {
+                                const option = document.createElement('option');
+                                option.value = piloto.idPiloto;
+                                option.textContent = `${piloto.nombrePiloto} ${piloto.apellidoPiloto} - ${piloto.dniPiloto}`;
+                                select.appendChild(option);
+                            });
+                            console.log('Pilotos cargados en el selector:', select.options.length);
+                        } else {
+                            console.error('No se encontró el selector de pilotos');
+                        }
+                    } else {
+                        console.error('Error al cargar pilotos:', data.message);
+                        mostrarMensajeError(data.message || 'Error al cargar pilotos', 'mensajeErrorPilotos');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al cargar pilotos:', error);
+                    mostrarMensajeError('Error al cargar pilotos: ' + error.message, 'mensajeErrorPilotos');
+                });
+        }
+
+        function cargarFlota() {
+            fetch('/Home/ObtenerFlota')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const tbody = document.querySelector('#flota table tbody');
+                        tbody.innerHTML = '';
+                        data.data.forEach(avion => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${avion.idAvion}</td>
+                                <td>${avion.modeloAvion}</td>
+                                <td>${avion.fabricanteAvion}</td>
+                                <td>${avion.matriculaAvion}</td>
+                                <td>${avion.capacidadAvion}</td>
+                                <td>${avion.claseAvion}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="editarAvion(${avion.idAvion})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="eliminarAvion(${avion.idAvion})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        mostrarMensajeError(data.message || 'Error al cargar flota', 'mensajeErrorFlota');
+                    }
+                })
+                .catch(error => {
+                    mostrarMensajeError('Error al cargar flota: ' + error.message, 'mensajeErrorFlota');
+                });
+        }
+
+        function registrarAvion() {
+            // Limpiar mensajes de error anteriores
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            
+            const avion = {
+                modeloAvion: document.getElementById('modeloAvion').value,
+                fabricanteAvion: document.getElementById('fabricanteAvion').value,
+                matriculaAvion: document.getElementById('matriculaAvion').value,
+                capacidadAvion: parseInt(document.getElementById('capacidadAvion').value),
+                claseAvion: document.getElementById('claseAvion').value
+            };
+
+            fetch('/Home/RegistrarAvion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(avion)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#modalRegistrarAvion').modal('hide');
+                    mostrarMensajeExito('Avión registrado exitosamente');
+                    document.getElementById('formRegistrarAvion').reset();
+                    cargarFlota();
+                } else {
+                    if (data.errors) {
+                        // Mostrar errores de validación debajo de cada campo
+                        Object.keys(data.errors).forEach(key => {
+                            const input = document.getElementById(key);
+                            if (input) {
+                                const errorDiv = document.createElement('div');
+                                errorDiv.className = 'error-message text-danger mt-1';
+                                errorDiv.textContent = data.errors[key];
+                                input.parentNode.appendChild(errorDiv);
+                            }
+                        });
+                    } else {
+                        mostrarMensajeError(data.message || 'Error al registrar avión', 'errorRegistroAvion');
+                    }
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al registrar avión: ' + error.message, 'errorRegistroAvion');
+            });
+        }
+
+        function editarAvion(idAvion) {
+            fetch(`/Home/ObtenerAvion/${idAvion}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('modeloAvion').value = data.data.modeloAvion;
+                        document.getElementById('fabricanteAvion').value = data.data.fabricanteAvion;
+                        document.getElementById('matriculaAvion').value = data.data.matriculaAvion;
+                        document.getElementById('capacidadAvion').value = data.data.capacidadAvion;
+                        document.getElementById('claseAvion').value = data.data.claseAvion;
+                        document.querySelector('#modalRegistrarAvion').dataset.avionId = idAvion;
+                        document.querySelector('#modalRegistrarAvion .modal-title').textContent = 'Editar Avión';
+                        document.querySelector('#modalRegistrarAvion .btn-primary').textContent = 'Guardar Cambios';
+                        $('#modalRegistrarAvion').modal('show');
+                    } else {
+                        mostrarMensajeError(data.message || 'Error al cargar datos del avión', 'errorRegistroAvion');
+                    }
+                })
+                .catch(error => {
+                    mostrarMensajeError('Error al cargar datos del avión: ' + error.message, 'errorRegistroAvion');
+                });
+        }
+
+        function eliminarAvion(idAvion) {
+            document.getElementById('eliminarAvionId').value = idAvion;
+            $('#modalEliminarAvion').modal('show');
+        }
+
+        function confirmarEliminacionAvion() {
+            const idAvion = document.getElementById('eliminarAvionId').value;
+            fetch(`/Home/EliminarAvion/${idAvion}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#modalEliminarAvion').modal('hide');
+                    mostrarMensajeExito('Avión eliminado exitosamente');
+                    cargarFlota();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al eliminar avión', 'errorEliminarAvion');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al eliminar avión: ' + error.message, 'errorEliminarAvion');
+            });
+        }
+
+        function cargarVuelos() {
+            fetch('/Home/ObtenerVuelos')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const tbody = document.querySelector('#vuelos table tbody');
+                        tbody.innerHTML = '';
+                        data.data.forEach(vuelo => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${vuelo.idVuelo}</td>
+                                <td>${vuelo.origenVuelo}</td>
+                                <td>${vuelo.destinoVuelo}</td>
+                                <td>${new Date(vuelo.fechaVuelo).toLocaleDateString()}</td>
+                                <td>${vuelo.avion.matriculaAvion}</td>
+                                <td>${vuelo.piloto.nombrePiloto} ${vuelo.piloto.apellidoPiloto}</td>
+                                <td>${vuelo.precioVuelo}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="editarVuelo(${vuelo.idVuelo})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="eliminarVuelo(${vuelo.idVuelo})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-info" onclick="verDetallesVuelo(${vuelo.idVuelo})">
+                                        <i class="fas fa-info-circle"></i> Detalles
+                                    </button>
+                                </td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        mostrarMensajeError(data.message || 'Error al cargar vuelos', 'mensajeErrorVuelos');
+                    }
+                })
+                .catch(error => {
+                    mostrarMensajeError('Error al cargar vuelos: ' + error.message, 'mensajeErrorVuelos');
+                });
+        }
+
+        function cargarAviones() {
+            fetch('/Home/ObtenerFlota')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const select = document.getElementById('idAvion');
+                        select.innerHTML = '<option value="">Seleccione un avión</option>';
+                        data.data.forEach(avion => {
+                            const option = document.createElement('option');
+                            option.value = avion.idAvion;
+                            option.textContent = `${avion.matriculaAvion} - ${avion.modeloAvion}`;
+                            select.appendChild(option);
+                        });
+                    }
+                });
+        }
+
+        function validarYRegistrarVuelo() {
+            // Limpiar mensajes de error anteriores
+            document.querySelectorAll('.text-danger').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+            document.getElementById('errorRegistroVuelo').style.display = 'none';
+
+            // Obtener valores
+            const origen = document.getElementById('origenVuelo').value;
+            const destino = document.getElementById('destinoVuelo').value;
+            const fecha = document.getElementById('fechaVuelo').value;
+            const avion = document.getElementById('idAvion').value;
+            const piloto = document.getElementById('idPiloto').value;
+            const precio = document.getElementById('precioVuelo').value;
+
+            // Validar campos requeridos
+            let hayErrores = false;
+
+            if (!origen) {
+                document.getElementById('errorOrigenVuelo').textContent = 'El origen es obligatorio';
+                document.getElementById('errorOrigenVuelo').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!destino) {
+                document.getElementById('errorDestinoVuelo').textContent = 'El destino es obligatorio';
+                document.getElementById('errorDestinoVuelo').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (origen && destino && origen === destino) {
+                document.getElementById('errorDestinoVuelo').textContent = 'El origen y destino no pueden ser la misma ciudad';
+                document.getElementById('errorDestinoVuelo').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!fecha) {
+                document.getElementById('errorFechaVuelo').textContent = 'La fecha es obligatoria';
+                document.getElementById('errorFechaVuelo').style.display = 'block';
+                hayErrores = true;
+            } else {
+                const fechaVuelo = new Date(fecha);
+                const fechaMinima = new Date();
+                fechaMinima.setDate(fechaMinima.getDate() + 2);
+                
+                if (fechaVuelo < fechaMinima) {
+                    document.getElementById('errorFechaVuelo').textContent = 'La fecha debe ser al menos 2 días en el futuro';
+                    document.getElementById('errorFechaVuelo').style.display = 'block';
+                    hayErrores = true;
+                }
+            }
+
+            if (!avion) {
+                document.getElementById('errorIdAvion').textContent = 'El avión es obligatorio';
+                document.getElementById('errorIdAvion').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!piloto) {
+                document.getElementById('errorIdPiloto').textContent = 'El piloto es obligatorio';
+                document.getElementById('errorIdPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!precio) {
+                document.getElementById('errorPrecioVuelo').textContent = 'El precio es obligatorio';
+                document.getElementById('errorPrecioVuelo').style.display = 'block';
+                hayErrores = true;
+            } else if (parseFloat(precio) <= 0) {
+                document.getElementById('errorPrecioVuelo').textContent = 'El precio debe ser mayor a 0';
+                document.getElementById('errorPrecioVuelo').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (hayErrores) {
+                return;
+            }
+
+            // Si no hay errores, proceder con el registro
+            registrarVuelo();
+        }
+
+        function registrarVuelo() {
+            const vueloId = document.querySelector('#modalRegistrarVuelo').dataset.vueloId;
+            const vuelo = {
+                origenVuelo: document.getElementById('origenVuelo').value,
+                destinoVuelo: document.getElementById('destinoVuelo').value,
+                fechaVuelo: document.getElementById('fechaVuelo').value,
+                idAvion: parseInt(document.getElementById('idAvion').value),
+                idPiloto: parseInt(document.getElementById('idPiloto').value),
+                precioVuelo: parseFloat(document.getElementById('precioVuelo').value)
+            };
+
+            const url = vueloId ? `/Home/ActualizarVuelo/${vueloId}` : '/Home/RegistrarVuelo';
+            const method = vueloId ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(vuelo)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarMensajeExito(vueloId ? 'Vuelo actualizado exitosamente' : 'Vuelo registrado exitosamente');
+                    document.getElementById('formRegistrarVuelo').reset();
+                    document.querySelector('#modalRegistrarVuelo .modal-title').textContent = 'Registrar Vuelo';
+                    document.querySelector('#modalRegistrarVuelo .btn-primary').textContent = 'Registrar';
+                    document.querySelector('#modalRegistrarVuelo').dataset.vueloId = '';
+                    $('#modalRegistrarVuelo').modal('hide');
+                    cargarVuelos();
+                } else {
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(key => {
+                            const errorElement = document.getElementById(`error${key.charAt(0).toUpperCase() + key.slice(1)}`);
+                            if (errorElement) {
+                                errorElement.textContent = data.errors[key];
+                                errorElement.style.display = 'block';
+                            }
+                        });
+                    } else {
+                        const errorElement = document.getElementById('errorRegistroVuelo');
+                        errorElement.textContent = data.message || 'Error al procesar la solicitud';
+                        errorElement.style.display = 'block';
+                    }
+                }
+            })
+            .catch(error => {
+                const errorElement = document.getElementById('errorRegistroVuelo');
+                errorElement.textContent = 'Error al procesar la solicitud: ' + error.message;
+                errorElement.style.display = 'block';
+            });
+        }
+
+        function editarVuelo(idVuelo) {
+            fetch(`/Home/ObtenerVuelo/${idVuelo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('origenVuelo').value = data.data.origenVuelo;
+                        document.getElementById('destinoVuelo').value = data.data.destinoVuelo;
+                        document.getElementById('fechaVuelo').value = data.data.fechaVuelo.split('T')[0];
+                        document.getElementById('idAvion').value = data.data.idAvion;
+                        document.getElementById('idPiloto').value = data.data.idPiloto;
+                        document.getElementById('precioVuelo').value = data.data.precioVuelo;
+                        document.querySelector('#modalRegistrarVuelo').dataset.vueloId = idVuelo;
+                        document.querySelector('#modalRegistrarVuelo .modal-title').textContent = 'Editar Vuelo';
+                        document.querySelector('#modalRegistrarVuelo .btn-primary').textContent = 'Guardar Cambios';
+                        $('#modalRegistrarVuelo').modal('show');
+                    } else {
+                        mostrarMensajeError(data.message || 'Error al cargar datos del vuelo', 'errorRegistroVuelo');
+                    }
+                })
+                .catch(error => {
+                    mostrarMensajeError('Error al cargar datos del vuelo: ' + error.message, 'errorRegistroVuelo');
+                });
+        }
+
+        function eliminarVuelo(idVuelo) {
+            document.getElementById('eliminarVueloId').value = idVuelo;
+            $('#modalEliminarVuelo').modal('show');
+        }
+
+        function confirmarEliminacionVuelo() {
+            const idVuelo = document.getElementById('eliminarVueloId').value;
+            fetch(`/Home/EliminarVuelo/${idVuelo}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#modalEliminarVuelo').modal('hide');
+                    mostrarMensajeExito('Vuelo eliminado exitosamente');
+                    cargarVuelos();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al eliminar vuelo', 'errorEliminarVuelo');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al eliminar vuelo: ' + error.message, 'errorEliminarVuelo');
+            });
+        }
+
+        // Cargar pilotos y aviones al abrir el modal de registro de vuelo
+        $('#modalRegistrarVuelo').on('show.bs.modal', function () {
+            console.log('Modal de vuelos abierto, cargando pilotos...');
+            cargarPilotos();
+            cargarAviones();
+        });
+
+        function verDetallesVuelo(idVuelo) {
+            fetch(`/Home/ObtenerDetallesVuelo/${idVuelo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const tbody = document.getElementById('detallesVueloBody');
+                        tbody.innerHTML = '';
+                        
+                        data.data.forEach(reserva => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${reserva.idResVuelo}</td>
+                                <td>${reserva.usuario.nombresUsuario} ${reserva.usuario.apellidosUsuario}</td>
+                                <td>${reserva.origenResVue}</td>
+                                <td>${reserva.destinoVuelo}</td>
+                                <td>${new Date(reserva.vuelo.fechaVuelo).toLocaleDateString()}</td>
+                                <td>
+                                    <span class="badge ${reserva.pagadoVuelo ? 'bg-success' : 'bg-warning'}">
+                                        ${reserva.pagadoVuelo ? 'Pagado' : 'Pendiente'}
+                                    </span>
+                                </td>
+                                <td>S/. ${reserva.precioVuelo.toFixed(2)}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                        
+                        $('#modalDetallesVuelo').modal('show');
+                    } else {
+                        mostrarMensajeError(data.message || 'Error al cargar detalles del vuelo', 'errorDetallesVuelo');
+                    }
+                })
+                .catch(error => {
+                    mostrarMensajeError('Error al cargar detalles del vuelo: ' + error.message, 'errorDetallesVuelo');
+                });
+        }
+
+        function eliminarConsulta(id) {
+            document.getElementById('eliminarConsultaId').value = id;
+            $('#modalEliminarConsulta').modal('show');
+        }
+
+        function confirmarEliminacionConsulta() {
+            const id = document.getElementById('eliminarConsultaId').value;
+
+            fetch('/Home/EliminarConsulta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    $('#modalEliminarConsulta').modal('hide');
+                    mostrarMensajeExito('Consulta eliminada correctamente');
+                    location.reload();
+                } else {
+                    mostrarMensajeError(data.message || 'Error al eliminar consulta', 'errorEliminarConsulta');
+                }
+            })
+            .catch(error => {
+                mostrarMensajeError('Error al eliminar consulta: ' + error.message, 'errorEliminarConsulta');
+            });
+        }
+
+        function mostrarCondicion(valor) {
+            const condicionGroup = document.getElementById('condicionGroup');
+            if (valor === 'true') {
+                condicionGroup.style.display = 'block';
+            } else {
+                condicionGroup.style.display = 'none';
+            }
+        }
+
+        function validarPiloto() {
+            let esValido = true;
+            const hoy = new Date();
+            
+            // Validar Nombre
+            const nombre = document.getElementById('nombrePiloto').value;
+            if (!nombre || nombre.length < 5 || nombre.length > 30 || !/^[A-Za-zÀ-ÿ\s]+$/.test(nombre)) {
+                document.getElementById('errorNombrePiloto').textContent = 'El nombre debe tener entre 5 y 30 caracteres y solo letras';
+                document.getElementById('errorNombrePiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorNombrePiloto').style.display = 'none';
+            }
+
+            // Validar Apellido
+            const apellido = document.getElementById('apellidoPiloto').value;
+            if (!apellido || apellido.length < 5 || apellido.length > 30 || !/^[A-Za-zÀ-ÿ\s]+$/.test(apellido)) {
+                document.getElementById('errorApellidoPiloto').textContent = 'El apellido debe tener entre 5 y 30 caracteres y solo letras';
+                document.getElementById('errorApellidoPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorApellidoPiloto').style.display = 'none';
+            }
+
+            // Validar Fecha de Nacimiento
+            const nacimiento = new Date(document.getElementById('nacimientoPiloto').value);
+            if (!document.getElementById('nacimientoPiloto').value || nacimiento >= hoy || nacimiento.getFullYear() === 0) {
+                document.getElementById('errorNacimientoPiloto').textContent = 'La fecha de nacimiento debe ser válida y no puede ser futura';
+                document.getElementById('errorNacimientoPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorNacimientoPiloto').style.display = 'none';
+            }
+
+            // Validar Teléfono
+            const telefono = document.getElementById('telefonoPiloto').value;
+            if (!telefono || !/^\d{9}$/.test(telefono)) {
+                document.getElementById('errorTelefonoPiloto').textContent = 'El teléfono debe tener 9 dígitos';
+                document.getElementById('errorTelefonoPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorTelefonoPiloto').style.display = 'none';
+            }
+
+            // Validar DNI
+            const dni = document.getElementById('dniPiloto').value;
+            if (!dni || !/^\d{8}$/.test(dni)) {
+                document.getElementById('errorDniPiloto').textContent = 'El DNI debe tener 8 dígitos';
+                document.getElementById('errorDniPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorDniPiloto').style.display = 'none';
+            }
+
+            // Validar Licencia
+            const licencia = document.getElementById('licenciaPiloto').value;
+            if (!licencia || !/^\d{9}$/.test(licencia)) {
+                document.getElementById('errorLicenciaPiloto').textContent = 'La licencia debe tener 9 dígitos';
+                document.getElementById('errorLicenciaPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorLicenciaPiloto').style.display = 'none';
+            }
+
+            // Validar Tipo de Licencia
+            const tipoLic = document.getElementById('tipoLicPiloto').value;
+            if (!tipoLic) {
+                document.getElementById('errorTipoLicPiloto').textContent = 'Debe seleccionar un tipo de licencia';
+                document.getElementById('errorTipoLicPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorTipoLicPiloto').style.display = 'none';
+            }
+
+            // Validar Fecha de Emisión de Licencia
+            const fechaEmision = new Date(document.getElementById('fechaEmiLic').value);
+            if (!document.getElementById('fechaEmiLic').value || fechaEmision >= hoy || fechaEmision.getFullYear() === 0) {
+                document.getElementById('errorFechaEmiLic').textContent = 'La fecha de emisión debe ser válida y no puede ser futura';
+                document.getElementById('errorFechaEmiLic').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorFechaEmiLic').style.display = 'none';
+            }
+
+            return esValido;
+        }
+
+        function validarAvion() {
+            let esValido = true;
+
+            // Validar Modelo
+            const modelo = document.getElementById('modeloAvion').value;
+            if (!modelo || modelo.length < 5 || modelo.length > 15) {
+                document.getElementById('errorModeloAvion').textContent = 'El modelo debe tener entre 5 y 15 caracteres';
+                document.getElementById('errorModeloAvion').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorModeloAvion').style.display = 'none';
+            }
+
+            // Validar Fabricante
+            const fabricante = document.getElementById('fabricanteAvion').value;
+            if (!fabricante || fabricante.length > 10) {
+                document.getElementById('errorFabricanteAvion').textContent = 'El fabricante no puede tener más de 10 caracteres';
+                document.getElementById('errorFabricanteAvion').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorFabricanteAvion').style.display = 'none';
+            }
+
+            // Validar Matrícula
+            const matricula = document.getElementById('matriculaAvion').value;
+            if (!matricula || matricula.length < 3 || matricula.length > 8) {
+                document.getElementById('errorMatriculaAvion').textContent = 'La matrícula debe tener entre 3 y 8 caracteres';
+                document.getElementById('errorMatriculaAvion').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorMatriculaAvion').style.display = 'none';
+            }
+
+            // Validar Capacidad
+            const capacidad = document.getElementById('capacidadAvion').value;
+            if (!capacidad || capacidad < 10 || capacidad > 200) {
+                document.getElementById('errorCapacidadAvion').textContent = 'La capacidad debe estar entre 10 y 200 pasajeros';
+                document.getElementById('errorCapacidadAvion').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorCapacidadAvion').style.display = 'none';
+            }
+
+            // Validar Clase
+            const clase = document.getElementById('claseAvion').value;
+            if (!clase) {
+                document.getElementById('errorClaseAvion').textContent = 'Debe seleccionar una clase';
+                document.getElementById('errorClaseAvion').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorClaseAvion').style.display = 'none';
+            }
+
+            return esValido;
+        }
+
+        function validarVuelo() {
+            let esValido = true;
+
+            // Validar Origen
+            const origen = document.getElementById('origenVuelo').value;
+            if (!origen) {
+                document.getElementById('errorOrigen').textContent = 'Debe seleccionar un origen';
+                document.getElementById('errorOrigen').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorOrigen').style.display = 'none';
+            }
+
+            // Validar Destino
+            const destino = document.getElementById('destinoVuelo').value;
+            if (!destino) {
+                document.getElementById('errorDestino').textContent = 'Debe seleccionar un destino';
+                document.getElementById('errorDestino').style.display = 'block';
+                esValido = false;
+            } else if (destino === origen) {
+                document.getElementById('errorDestino').textContent = 'El destino no puede ser igual al origen';
+                document.getElementById('errorDestino').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorDestino').style.display = 'none';
+            }
+
+            // Validar Fecha
+            const fecha = new Date(document.getElementById('fechaVuelo').value);
+            const hoy = new Date();
+            if (!document.getElementById('fechaVuelo').value || fecha <= hoy) {
+                document.getElementById('errorFecha').textContent = 'La fecha debe ser futura';
+                document.getElementById('errorFecha').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorFecha').style.display = 'none';
+            }
+
+            // Validar Precio
+            const precio = document.getElementById('precioVuelo').value;
+            if (!precio || precio <= 0) {
+                document.getElementById('errorPrecio').textContent = 'El precio debe ser mayor a 0';
+                document.getElementById('errorPrecio').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorPrecio').style.display = 'none';
+            }
+
+            // Validar Avión
+            const avion = document.getElementById('idAvion').value;
+            if (!avion) {
+                document.getElementById('errorAvion').textContent = 'Debe seleccionar un avión';
+                document.getElementById('errorAvion').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorAvion').style.display = 'none';
+            }
+
+            // Validar Piloto
+            const piloto = document.getElementById('idPiloto').value;
+            if (!piloto) {
+                document.getElementById('errorPiloto').textContent = 'Debe seleccionar un piloto';
+                document.getElementById('errorPiloto').style.display = 'block';
+                esValido = false;
+            } else {
+                document.getElementById('errorPiloto').style.display = 'none';
+            }
+
+            return esValido;
+        }
+
+        function validarEdadPiloto(input) {
+            const fechaNacimiento = new Date(input.value);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+            const mesActual = hoy.getMonth();
+            const mesNacimiento = fechaNacimiento.getMonth();
+            
+            if (mesActual < mesNacimiento || (mesActual === mesNacimiento && hoy.getDate() < fechaNacimiento.getDate())) {
+                edad--;
+            }
+
+            const errorElement = document.getElementById('errorNacimientoPiloto');
+            if (edad < 25) {
+                errorElement.textContent = 'El piloto debe tener al menos 25 años de edad';
+                errorElement.style.display = 'block';
+                input.value = ''; // Limpiar el valor si no cumple con la edad mínima
+            } else {
+                errorElement.style.display = 'none';
+            }
+        }
+
+        function validarYRegistrarPiloto() {
+            // Limpiar mensajes de error anteriores
+            document.querySelectorAll('.text-danger').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+            document.getElementById('errorRegistroPiloto').style.display = 'none';
+
+            // Obtener valores
+            const nombre = document.getElementById('nombrePiloto').value;
+            const apellido = document.getElementById('apellidoPiloto').value;
+            const nacimiento = document.getElementById('nacimientoPiloto').value;
+            const telefono = document.getElementById('telefonoPiloto').value;
+            const dni = document.getElementById('dniPiloto').value;
+            const licencia = document.getElementById('licenciaPiloto').value;
+            const tipoLicencia = document.getElementById('tipoLicPiloto').value;
+            const fechaEmision = document.getElementById('fechaEmiLic').value;
+
+            // Validar campos requeridos
+            let hayErrores = false;
+
+            if (!nombre) {
+                document.getElementById('errorNombrePiloto').textContent = 'El nombre es obligatorio';
+                document.getElementById('errorNombrePiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!apellido) {
+                document.getElementById('errorApellidoPiloto').textContent = 'El apellido es obligatorio';
+                document.getElementById('errorApellidoPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!nacimiento) {
+                document.getElementById('errorNacimientoPiloto').textContent = 'La fecha de nacimiento es obligatoria';
+                document.getElementById('errorNacimientoPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!telefono) {
+                document.getElementById('errorTelefonoPiloto').textContent = 'El teléfono es obligatorio';
+                document.getElementById('errorTelefonoPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!dni) {
+                document.getElementById('errorDniPiloto').textContent = 'El DNI es obligatorio';
+                document.getElementById('errorDniPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!licencia) {
+                document.getElementById('errorLicenciaPiloto').textContent = 'La licencia es obligatoria';
+                document.getElementById('errorLicenciaPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!tipoLicencia) {
+                document.getElementById('errorTipoLicPiloto').textContent = 'El tipo de licencia es obligatorio';
+                document.getElementById('errorTipoLicPiloto').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (!fechaEmision) {
+                document.getElementById('errorFechaEmiLic').textContent = 'La fecha de emisión es obligatoria';
+                document.getElementById('errorFechaEmiLic').style.display = 'block';
+                hayErrores = true;
+            }
+
+            if (hayErrores) {
+                return;
+            }
+
+            // Si no hay errores, proceder con el registro
+            registrarPiloto();
+        }
+    </script>
+</head>
+<body>
+    <div class="admin-panel">
+        <!-- Barra lateral -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Panel StarVuelos</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="javascript:void(0);" onclick="mostrarSeccion('usuarios')">Usuarios</a></li>
+                <li><a href="javascript:void(0);" onclick="mostrarSeccion('consultas')">Consultas</a></li>
+                <li><a href="javascript:void(0);" onclick="mostrarSeccion('pilotos')">Pilotos</a></li>
+                <li><a href="javascript:void(0);" onclick="mostrarSeccion('flota')">Flota</a></li>
+                <li><a href="javascript:void(0);" onclick="mostrarSeccion('vuelos')">Vuelos</a></li>
+                <li><a href="@Url.Action("Index", "Home")">Volver al Inicio</a></li>
+            </ul>
+        </nav>
+
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <div id="contenido">
+                <!-- Sección Usuarios -->
+                <section id="usuarios" class="seccion">
+                    <h3>Usuarios Registrados</h3>
+                    <div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+                    <div id="mensajeExito" class="alert alert-success" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Nombres</th>
+                                    <th>Apellidos</th>
+                                    <th>Nacimiento</th>
+                                    <th>Teléfono</th>
+                                    <th>Identificación</th>
+                                    <th>Correo</th>
+                                    <th>Contraseña</th>
+                                    <th>Rol</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var usuario in usuarios)
+                                {
+                                    <tr>
+                                        <td>@usuario.nombresUsuario</td>
+                                        <td>@usuario.apellidosUsuario</td>
+                                        <td>@usuario.nacimientoUsuario.ToShortDateString()</td>
+                                        <td>@usuario.telefonoUsuario</td>
+                                        <td>@usuario.identificacionUsuario</td>
+                                        <td>@usuario.correoUsuario</td>
+                                        <td>********</td>
+                                        <td>@(usuario.esAdmin ? "Administrador" : "Pasajero")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="editarUsuario(@usuario.idUsuario)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="cambiarRol(@usuario.idUsuario, @usuario.esAdmin.ToString().ToLower())">
+                                                <i class="fas fa-user-shield"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="eliminarUsuario(@usuario.idUsuario)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Sección Consultas -->
+                <section id="consultas" class="seccion" style="display: none;">
+                    <h3>Consultas de Clientes</h3>
+                    <div id="mensajeErrorConsultas" class="alert alert-danger" style="display: none;"></div>
+                    <div id="mensajeExitoConsultas" class="alert alert-success" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Motivo</th>
+                                    <th>Descripción</th>
+                                    <th>Urgencia</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var consulta in consultas)
+                                {
+                                    <tr class="@(consulta.urgencia == "Alto" ? "table-danger" : consulta.urgencia == "Medio" ? "table-warning" : "table-info")">
+                                        <td>@consulta.idConsulta</td>
+                                        <td>@consulta.Usuario.nombresUsuario @consulta.Usuario.apellidosUsuario</td>
+                                        <td>@consulta.motivoConsulta</td>
+                                        <td>@consulta.descripcionConsultas</td>
+                                        <td>@consulta.urgencia</td>
+                                        <td>
+                                            <span class="badge @(consulta.estado == "Resuelto" ? "bg-success" : "bg-warning")">
+                                                @consulta.estado
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success" onclick="marcarResuelto(@consulta.idConsulta)">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-warning" onclick="marcarPendiente(@consulta.idConsulta)">
+                                                <i class="fas fa-clock"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-info" onclick="marcarResuelto(@consulta.idConsulta)">
+                                                <i class="fas fa-comment"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" onclick="eliminarConsulta(@consulta.idConsulta)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Sección Pilotos -->
+                <section id="pilotos" class="seccion" style="display: none;">
+                    <h3>Registro de Pilotos</h3>
+                    <div id="mensajeErrorPilotos" class="alert alert-danger" style="display: none;"></div>
+                    <div id="mensajeExitoPilotos" class="alert alert-success" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Fecha de Nacimiento</th>
+                                    <th>Teléfono</th>
+                                    <th>DNI</th>
+                                    <th>Licencia</th>
+                                    <th>Tipo de Licencia</th>
+                                    <th>Fecha de Emisión</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRegistrarPiloto">
+                        <i class="fas fa-plus"></i> Registrar Piloto
+                    </button>
+                </section>
+
+                <!-- Sección Flota -->
+                <section id="flota" class="seccion" style="display: none;">
+                    <h3>Gestión de Flota</h3>
+                    <div id="mensajeErrorFlota" class="alert alert-danger" style="display: none;"></div>
+                    <div id="mensajeExitoFlota" class="alert alert-success" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Modelo</th>
+                                    <th>Fabricante</th>
+                                    <th>Matrícula</th>
+                                    <th>Capacidad</th>
+                                    <th>Clase</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRegistrarAvion">
+                        <i class="fas fa-plus"></i> Registrar Avión
+                    </button>
+                </section>
+
+                <!-- Sección Vuelos -->
+                <section id="vuelos" class="seccion" style="display: none;">
+                    <h3>Gestión de Vuelos</h3>
+                    <div id="mensajeErrorVuelos" class="alert alert-danger" style="display: none;"></div>
+                    <div id="mensajeExitoVuelos" class="alert alert-success" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Fecha</th>
+                                    <th>Avión</th>
+                                    <th>Piloto</th>
+                                    <th>Precio</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRegistrarVuelo">
+                        <i class="fas fa-plus"></i> Registrar Vuelo
+                    </button>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editId">
+                    <div class="mb-3">
+                        <label>Nombres</label>
+                        <input type="text" class="form-control" id="editNombres">
+                    </div>
+                    <div class="mb-3">
+                        <label>Apellidos</label>
+                        <input type="text" class="form-control" id="editApellidos">
+                    </div>
+                    <div class="mb-3">
+                        <label>Fecha de Nacimiento</label>
+                        <input type="date" class="form-control" id="editNacimiento">
+                    </div>
+                    <div class="mb-3">
+                        <label>Teléfono</label>
+                        <input type="text" class="form-control" id="editTelefono">
+                    </div>
+                    <div class="mb-3">
+                        <label>Identificación</label>
+                        <input type="text" class="form-control" id="editIdentificacion" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label>Correo</label>
+                        <input type="email" class="form-control" id="editCorreo">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarCambios()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cambiar Rol -->
+    <div class="modal fade" id="modalCambiarRol" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cambiar Rol de Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorRol" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="cambiarRolId">
+                    <input type="hidden" id="cambiarRolActual">
+                    <p>¿Está seguro que desea cambiar el rol de este usuario?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmarCambioRol()">Confirmar Cambio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Usuario -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorEliminar" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="eliminarId">
+                    <p>¿Está seguro que desea eliminar este usuario?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarEliminacion()">Confirmar Eliminación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registrar Piloto -->
+    <div class="modal fade" id="modalRegistrarPiloto" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Piloto</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorRegistroPiloto" class="alert alert-danger" style="display: none;"></div>
+                    <form id="formRegistrarPiloto">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Nombre</label>
+                                    <input type="text" class="form-control" id="nombrePiloto" name="nombrePiloto" required maxlength="30" minlength="5" pattern="[A-Za-zÀ-ÿ\s]+">
+                                    <small class="text-danger" id="errorNombrePiloto" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Apellido</label>
+                                    <input type="text" class="form-control" id="apellidoPiloto" name="apellidoPiloto" required maxlength="30" minlength="5" pattern="[A-Za-zÀ-ÿ\s]+">
+                                    <small class="text-danger" id="errorApellidoPiloto" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="nacimientoPiloto" name="nacimientoPiloto" required 
+                                           max="@DateTime.Now.AddYears(-25).ToString("yyyy-MM-dd")" 
+                                           onchange="validarEdadPiloto(this)">
+                                    <small class="text-danger" id="errorNacimientoPiloto" style="display: none;"></small>
+                                    <small class="text-muted">El piloto debe tener al menos 25 años de edad</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Teléfono</label>
+                                    <input type="text" class="form-control" id="telefonoPiloto" name="telefonoPiloto" required maxlength="9" pattern="[0-9]{9}">
+                                    <small class="text-danger" id="errorTelefonoPiloto" style="display: none;"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>DNI</label>
+                                    <input type="text" class="form-control" id="dniPiloto" name="dniPiloto" required maxlength="8" pattern="[0-9]{8}">
+                                    <small class="text-danger" id="errorDniPiloto" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Número de Licencia</label>
+                                    <input type="text" class="form-control" id="licenciaPiloto" name="licenciaPiloto" required maxlength="9" pattern="[0-9]{9}">
+                                    <small class="text-danger" id="errorLicenciaPiloto" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de Licencia</label>
+                                    <select class="form-control" id="tipoLicPiloto" name="tipoLicPiloto" required>
+                                        <option value="">Seleccione un tipo</option>
+                                        <option value="Comercial">Comercial</option>
+                                        <option value="Privada">Privada</option>
+                                    </select>
+                                    <small class="text-danger" id="errorTipoLicPiloto" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha de Emisión de Licencia</label>
+                                    <input type="date" class="form-control" id="fechaEmiLic" name="fechaEmiLic" required>
+                                    <small class="text-danger" id="errorFechaEmiLic" style="display: none;"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="validarYRegistrarPiloto()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Piloto -->
+    <div class="modal fade" id="modalEliminarPiloto" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Piloto</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorEliminarPiloto" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="eliminarPilotoId">
+                    <p>¿Está seguro que desea eliminar este piloto?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarEliminacionPiloto()">Confirmar Eliminación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registrar Avión -->
+    <div class="modal fade" id="modalRegistrarAvion" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Avión</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorRegistroAvion" class="alert alert-danger" style="display: none;"></div>
+                    <form id="formRegistrarAvion">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Modelo</label>
+                                    <input type="text" class="form-control" id="modeloAvion" required maxlength="15" minlength="5">
+                                    <small class="text-danger" id="errorModeloAvion" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fabricante</label>
+                                    <input type="text" class="form-control" id="fabricanteAvion" required maxlength="10">
+                                    <small class="text-danger" id="errorFabricanteAvion" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Matrícula</label>
+                                    <input type="text" class="form-control" id="matriculaAvion" required maxlength="8" minlength="3">
+                                    <small class="text-danger" id="errorMatriculaAvion" style="display: none;"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Capacidad</label>
+                                    <input type="number" class="form-control" id="capacidadAvion" required min="10" max="200">
+                                    <small class="text-danger" id="errorCapacidadAvion" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Clase</label>
+                                    <select class="form-control" id="claseAvion" required>
+                                        <option value="">Seleccione una clase</option>
+                                        <option value="Económica">Económica</option>
+                                        <option value="Ejecutiva">Ejecutiva</option>
+                                        <option value="Primera clase">Primera clase</option>
+                                    </select>
+                                    <small class="text-danger" id="errorClaseAvion" style="display: none;"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="registrarAvion()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Avión -->
+    <div class="modal fade" id="modalEliminarAvion" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Avión</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorEliminarAvion" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="eliminarAvionId">
+                    <p>¿Está seguro que desea eliminar este avión?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarEliminacionAvion()">Confirmar Eliminación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Registrar Vuelo -->
+    <div class="modal fade" id="modalRegistrarVuelo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Vuelo</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorRegistroVuelo" class="alert alert-danger" style="display: none;"></div>
+                    <form id="formRegistrarVuelo" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Origen</label>
+                                    <select class="form-control" id="origenVuelo" name="origenVuelo" required>
+                                        <option value="">Seleccione una ciudad</option>
+                                        <option value="Chiclayo">Chiclayo</option>
+                                        <option value="Cajamarca">Cajamarca</option>
+                                        <option value="Huanuco">Huanuco</option>
+                                        <option value="Lima">Lima</option>
+                                        <option value="Iquitos">Iquitos</option>
+                                        <option value="Tarapoto">Tarapoto</option>
+                                        <option value="Pucallpa">Pucallpa</option>
+                                    </select>
+                                    <small class="text-danger" id="errorOrigenVuelo" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Destino</label>
+                                    <select class="form-control" id="destinoVuelo" name="destinoVuelo" required>
+                                        <option value="">Seleccione una ciudad</option>
+                                        <option value="Chiclayo">Chiclayo</option>
+                                        <option value="Cajamarca">Cajamarca</option>
+                                        <option value="Huanuco">Huanuco</option>
+                                        <option value="Lima">Lima</option>
+                                        <option value="Iquitos">Iquitos</option>
+                                        <option value="Tarapoto">Tarapoto</option>
+                                        <option value="Pucallpa">Pucallpa</option>
+                                    </select>
+                                    <small class="text-danger" id="errorDestinoVuelo" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha del Vuelo</label>
+                                    <input type="datetime-local" class="form-control" id="fechaVuelo" name="fechaVuelo" required>
+                                    <small class="text-danger" id="errorFechaVuelo" style="display: none;"></small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Avión</label>
+                                    <select class="form-control" id="idAvion" name="idAvion" required>
+                                        <option value="">Seleccione un avión</option>
+                                    </select>
+                                    <small class="text-danger" id="errorIdAvion" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Piloto</label>
+                                    <select class="form-control" id="idPiloto" name="idPiloto" required>
+                                        <option value="">Seleccione un piloto</option>
+                                    </select>
+                                    <small class="text-danger" id="errorIdPiloto" style="display: none;"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Precio</label>
+                                    <input type="number" class="form-control" id="precioVuelo" name="precioVuelo" required min="0.01" step="0.01">
+                                    <small class="text-danger" id="errorPrecioVuelo" style="display: none;"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="validarYRegistrarVuelo()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Vuelo -->
+    <div class="modal fade" id="modalEliminarVuelo" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Vuelo</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorEliminarVuelo" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="eliminarVueloId">
+                    <p>¿Está seguro que desea eliminar este vuelo?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarEliminacionVuelo()">Confirmar Eliminación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalles Vuelo -->
+    <div class="modal fade" id="modalDetallesVuelo" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles de Reservas y Pagos</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorDetallesVuelo" class="alert alert-danger" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID Reserva</th>
+                                    <th>Pasajero</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Fecha Vuelo</th>
+                                    <th>Estado Pago</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detallesVueloBody">
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agregar el modal para comentarios -->
+    <div class="modal fade" id="modalComentario" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Comentario</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorComentario" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="idConsulta">
+                    <div class="form-group">
+                        <label for="comentario">Comentario (opcional)</label>
+                        <textarea class="form-control" id="comentario" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="confirmarResuelto()">Marcar como Resuelto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Consulta -->
+    <div class="modal fade" id="modalEliminarConsulta" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Eliminar Consulta</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorEliminarConsulta" class="alert alert-danger" style="display: none;"></div>
+                    <input type="hidden" id="eliminarConsultaId">
+                    <p>¿Está seguro que desea eliminar esta consulta?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmarEliminacionConsulta()">Confirmar Eliminación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

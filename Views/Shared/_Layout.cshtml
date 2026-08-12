@@ -1,0 +1,1154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AeroLinea</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/Home/Estilos_index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Home/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/daltonismo.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset y configuración base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Switch de accesibilidad moderno */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            padding: 4px 10px;
+            margin: 0 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .switch-container:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+            margin-right: 8px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 25px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #e14a4a 0%, #ff6b6b 100%);
+            box-shadow: 0 0 15px rgba(225, 74, 74, 0.4);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .switch-label {
+            color: #333;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .switch-label i {
+            color: #e14a4a;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .switch-container:hover .switch-label i {
+            transform: scale(1.1);
+        }
+
+        .accessibility-switches {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        /* Botón hamburguesa moderno */
+        .hamburger {
+            background: linear-gradient(135deg, #e14a4a 0%, #ff6b6b 100%);
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            padding: 6px 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(225, 74, 74, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hamburger::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .hamburger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(225, 74, 74, 0.4);
+        }
+
+        .hamburger:hover::before {
+            left: 100%;
+        }
+
+        .hamburger i {
+            transition: transform 0.3s ease;
+            line-height: 1;
+            display: block;
+        }
+
+        .hamburger:hover i {
+            transform: rotate(90deg);
+        }
+
+        /* Menú desplegable moderno */
+        #menuOptions {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 350px;
+            height: 100vh;
+            background: #ffffff;
+            border: none;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateX(-100%);
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-radius: 0;
+            -ms-overflow-style: none; /* IE/Edge legacy */
+            scrollbar-width: none; /* Firefox */
+            contain: paint;
+            isolation: isolate;
+            will-change: transform;
+        }
+
+        #menuOptions::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none; /* Chrome/Safari/Opera */
+        }
+
+        #menuOptions.show {
+            transform: translateX(0);
+        }
+
+        /* Partículas flotantes en el menú */
+        .menu-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .menu-particle {
+            position: absolute;
+            background: rgba(225, 74, 74, 0.1);
+            border-radius: 50%;
+            animation: menuFloat 6s ease-in-out infinite;
+        }
+
+        @@keyframes menuFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; }
+        }
+
+        .card2 {
+            background: transparent;
+            border: none;
+            padding: 0;
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Header del menú */
+        .menu-header {
+            background: linear-gradient(135deg, #e14a4a 0%, #ff6b6b 100%);
+            margin: 0;
+            padding: 2rem;
+            border-radius: 0 30px 0 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(225, 74, 74, 0.3);
+        }
+
+        .menu-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .menu-header:hover::before {
+            left: 100%;
+        }
+
+        .menu-main-title {
+            color: white;
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .menu-main-title i {
+            font-size: 1.8rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .btn-close {
+            background: rgba(255, 255, 255, 0.2);
+            background-image: none !important;
+            --bs-btn-close-bg: none;
+            border: none;
+            color: white;
+            opacity: 1;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        .btn-close i {
+            font-size: 1.2rem;
+        }
+
+        /* Eliminar el pseudo-elemento de Bootstrap que causa la X doble */
+        .btn-close::before,
+        .btn-close::after {
+            display: none !important;
+        }
+
+        /* Contenido del menú */
+        .menu-content {
+            padding: 2rem 0;
+            background: transparent;
+            width: 100%;
+        }
+
+        #menuOptions .menu-nav {
+            width: 100%;
+            margin-left: 0 !important;
+            padding-right: 0;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #menuOptions .nav-item,
+        #menuOptions .nav-link {
+            width: 100%;
+        }
+
+        /* Dropdown de daltonismo mejorado */
+        .daltonism-dropdown {
+            position: relative;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .daltonism-switch-container {
+            overflow: visible !important;
+        }
+
+        .daltonism-dropdown .dropdown-menu {
+            position: absolute !important;
+            top: calc(100% + 8px) !important;
+            left: 0 !important;
+            z-index: 9999999 !important;
+            min-width: 320px;
+            background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%) !important;
+            border: 1px solid rgba(225, 74, 74, 0.22) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 14px 35px rgba(20, 20, 20, 0.14), 0 2px 8px rgba(225, 74, 74, 0.18) !important;
+            padding: 0.45rem !important;
+            margin-top: 5px !important;
+            display: none !important;
+            max-height: 320px !important;
+            overflow-y: auto !important;
+            transform: none !important;
+        }
+
+        .daltonism-dropdown .dropdown-menu::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .daltonism-dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff9a9a 0%, #e14a4a 100%);
+            border-radius: 10px;
+        }
+
+        .daltonism-dropdown .dropdown-menu::-webkit-scrollbar-track {
+            background: rgba(225, 74, 74, 0.08);
+            border-radius: 10px;
+        }
+
+        .daltonism-dropdown .dropdown-menu.show {
+            display: block !important;
+        }
+
+        .daltonism-dropdown .dropdown-item {
+            padding: 0.68rem 0.85rem !important;
+            color: #484848 !important;
+            text-decoration: none !important;
+            display: block !important;
+            transition: all 0.3s ease !important;
+            border: none !important;
+            background: transparent !important;
+            width: 100% !important;
+            text-align: left !important;
+            cursor: pointer !important;
+            white-space: normal !important;
+            font-size: 0.86rem;
+            line-height: 1.35;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .daltonism-dropdown .dropdown-item:hover {
+            background: linear-gradient(135deg, rgba(225, 74, 74, 0.14) 0%, rgba(255, 107, 107, 0.16) 100%) !important;
+            color: #c72c2c !important;
+            transform: translateX(4px) !important;
+        }
+
+        .daltonism-dropdown .dropdown-item:active,
+        .daltonism-dropdown .dropdown-item:focus {
+            background: linear-gradient(135deg, rgba(225, 74, 74, 0.2) 0%, rgba(255, 107, 107, 0.2) 100%) !important;
+            color: #ad2020 !important;
+            outline: none !important;
+        }
+
+        .daltonism-dropdown .dropdown-divider {
+            margin: 0.45rem 0.2rem !important;
+            border-top: 1px solid rgba(225, 74, 74, 0.18) !important;
+        }
+
+        /* CSS adicional para forzar visibilidad */
+        .daltonism-dropdown .dropdown-menu.force-show {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 9999999 !important;
+            position: absolute !important;
+            top: calc(100% + 5px) !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+
+        /* Asegurar que el dropdown esté por encima de todo */
+        .daltonism-dropdown {
+            z-index: 9999999 !important;
+        }
+
+        /* Forzar que el dropdown se muestre por encima del header */
+        .daltonism-dropdown .dropdown-menu {
+            z-index: 9999999 !important;
+            position: absolute !important;
+            top: calc(100% + 5px) !important;
+            left: 0 !important;
+            transform: none !important;
+        }
+
+        /* Override para cualquier z-index del navbar */
+        .navbar {
+            z-index: 1000 !important;
+            padding-top: 0.3rem !important;
+            padding-bottom: 0.3rem !important;
+        }
+
+        /* Compactar SOLO la cabecera superior */
+        .navbar .nav-link {
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .navbar .nav-link:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+
+        .navbar .nav-link img {
+            height: 52px !important;
+            width: auto;
+            display: block;
+            position: relative;
+            top: -4px;
+        }
+
+        /* Asegurar que el dropdown esté por encima de todo */
+        #daltonismMenu {
+            z-index: 9999999 !important;
+            position: absolute !important;
+            top: calc(100% + 5px) !important;
+            left: 0 !important;
+            background: linear-gradient(180deg, #ffffff 0%, #fff8f8 100%) !important;
+            border: 1px solid rgba(225, 74, 74, 0.22) !important;
+            box-shadow: 0 14px 35px rgba(20, 20, 20, 0.14), 0 2px 8px rgba(225, 74, 74, 0.18) !important;
+        }
+
+        #daltonismOptionsDropdown {
+            min-width: 220px;
+            border-radius: 12px !important;
+            border: 1px solid rgba(225, 74, 74, 0.28) !important;
+            background: linear-gradient(135deg, #fff 0%, #fff3f3 100%) !important;
+            color: #b83434 !important;
+            font-weight: 600;
+            font-size: 0.84rem;
+            letter-spacing: 0.25px;
+            padding: 0.45rem 0.85rem !important;
+            box-shadow: 0 6px 16px rgba(225, 74, 74, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        #daltonismOptionsDropdown:hover {
+            transform: translateY(-1px);
+            border-color: rgba(225, 74, 74, 0.5) !important;
+            box-shadow: 0 10px 22px rgba(225, 74, 74, 0.25);
+        }
+
+        #daltonismOptionsDropdown:focus,
+        #daltonismOptionsDropdown:active {
+            outline: none !important;
+            border-color: rgba(225, 74, 74, 0.6) !important;
+            box-shadow: 0 0 0 3px rgba(225, 74, 74, 0.18), 0 8px 20px rgba(225, 74, 74, 0.22) !important;
+        }
+
+        .daltonism-switch-container .switch-label {
+            gap: 7px;
+            font-weight: 700;
+        }
+
+        .daltonism-switch-container .switch-label i {
+            font-size: 1.15rem;
+            filter: drop-shadow(0 1px 2px rgba(225, 74, 74, 0.28));
+        }
+
+        /* Secciones del menú */
+        .menu-section-title {
+            color: #e14a4a;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            padding: 1rem 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            background: linear-gradient(135deg, rgba(225, 74, 74, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+            border-radius: 15px;
+            border-left: 4px solid #e14a4a;
+            position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .menu-section-title:hover {
+            background: linear-gradient(135deg, rgba(225, 74, 74, 0.15) 0%, rgba(255, 107, 107, 0.15) 100%);
+            transform: translateX(5px);
+        }
+
+        /* Enlaces del menú */
+        .nav-link {
+            color: #555;
+            padding: 1rem 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 15px;
+            margin: 0.5rem 0;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(225, 74, 74, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, rgba(225, 74, 74, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+            color: #e14a4a;
+            transform: translateX(10px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(225, 74, 74, 0.15);
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link i {
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Overlay del menú */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-overlay.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsividad */
+        @@media (max-width: 768px) {
+            #menuOptions {
+                width: 100%;
+                border-radius: 0;
+            }
+
+            .menu-header {
+                border-radius: 0;
+            }
+
+            .accessibility-switches {
+                flex-direction: column;
+                gap: 10px;
+                margin-right: 10px;
+            }
+
+            .switch-container {
+                margin: 0;
+                padding: 6px 12px;
+            }
+
+            .switch-label {
+                font-size: 0.75rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .hamburger {
+                padding: 10px 12px;
+                font-size: 1.3rem;
+            }
+
+            .menu-main-title {
+                font-size: 1.3rem;
+            }
+
+            .nav-link {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <button class="hamburger" type="button" aria-controls="menuOptions" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <div class="line"></div>
+                                <img src="~/img/LOGO2.png" asp-append-version="true" alt="Home" />
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Switches de accesibilidad -->
+                    <div class="accessibility-switches">
+                        <!-- Opción de Daltonismo -->
+                        <div class="switch-container daltonism-switch-container">
+                            <label class="switch">
+                                <input type="checkbox" id="daltonismToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="switch-label">
+                                <i class="fas fa-palette"></i> Daltonismo
+                            </span>
+                            <!-- Dropdown que aparece solo cuando está activado -->
+                            <div class="daltonism-dropdown" id="daltonismDropdown" style="display: none;">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="daltonismOptionsDropdown" aria-expanded="false">
+                                        Seleccionar tipo
+                                    </button>
+                                    <ul class="dropdown-menu" id="daltonismMenu" aria-labelledby="daltonismOptionsDropdown">
+                                        <li><a class="dropdown-item" href="#" data-daltonism="default">Por defecto</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="protanopia">Protanopía (Ceguera al Rojo)</a></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="protanomaly">Protanomalía (Debilidad al Rojo)</a></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="deuteranopia">Deuteranopía (Ceguera al Verde)</a></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="deuteranomaly">Deuteranomalía (Debilidad al Verde)</a></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="tritanopia">Tritanopía (Ceguera al Azul)</a></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="tritanomaly">Tritanomalía (Debilidad al Azul)</a></li>
+                                        <li><a class="dropdown-item" href="#" data-daltonism="achromatopsia">Acromatopsia (Monocromatismo)</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="switch-container">
+                            <label class="switch">
+                                <input type="checkbox" id="voiceToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="switch-label">
+                                <i class="fas fa-volume-up"></i> Lector <span style="font-size: 0.7rem; color: #666;">(Alt+V)</span>
+                            </span>
+                        </div>
+                        <div class="switch-container">
+                            <label class="switch">
+                                <input type="checkbox" id="voiceNavToggle">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label">Reconocimiento de voz (di "activar" o "desactivar")</span>
+                        </div>
+                    </div>
+                    @if (Context.Session.GetString("AdminUsername") != null)
+                    {
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-outline-danger" asp-controller="Admin" asp-action="Logout">Cerrar Sesión</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+        <!-- Menú desplegable -->
+        <div class="menu-overlay" id="menuOverlay"></div>
+        <div id="menuOptions">
+            <!-- Partículas flotantes -->
+            <div class="menu-particles" id="menuParticles"></div>
+            
+            <div class="card2">
+                <!-- Header del menú -->
+                <div class="menu-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 menu-main-title">
+                            <i class="fas fa-plane"></i>
+                            Menú Principal
+                        </h5>
+                        <button type="button" class="btn-close" onclick="closeMenu()" aria-label="Close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contenido del menú -->
+                <div class="menu-content">
+                    <ul class="menu-nav">
+                        <li class="nav-item">
+                            <h5 class="menu-section-title">
+                                <i class="fas fa-user-circle me-2"></i>
+                                TU CUENTA
+                            </h5>
+                        </li>
+                        @if (Context.Session.GetString("UserEmail") != null)
+                        {
+                            if (Context.Session.GetString("UserType") == "admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="panelAdministrador">
+                                        <i class="fas fa-crown"></i>
+                                        Administrador
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="CerrarSesion">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Cerrar Sesión
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="perfilPasajero">
+                                        <i class="fas fa-user"></i>
+                                        Perfil
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Home" asp-action="CerrarSesion">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        Cerrar Sesión
+                                    </a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    Iniciar Sesión
+                                </a>
+                            </li>
+                        }
+
+                        <li class="nav-item">
+                            <h5 class="menu-section-title">
+                                <i class="fas fa-plane me-2"></i>
+                                VUELA
+                            </h5>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Destinos">
+                                <i class="fas fa-map-marked-alt"></i>
+                                Destinos
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <h5 class="menu-section-title">
+                                <i class="fas fa-question-circle me-2"></i>
+                                CONSULTAS
+                            </h5>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Servicios_al_cliente">
+                                <i class="fas fa-headset"></i>
+                                Consultas
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <h5 class="menu-section-title">
+                                <i class="fas fa-info-circle me-2"></i>
+                                INFORMACIÓN
+                            </h5>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Flota">
+                                <i class="fas fa-plane-departure"></i>
+                                Flota
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Reservas">
+                                <i class="fas fa-ticket-alt"></i>
+                                Reservas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Equipaje">
+                                <i class="fas fa-suitcase"></i>
+                                Equipaje
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Discapacidad">
+                                <i class="fas fa-wheelchair"></i>
+                                Discapacidad
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <h5 class="menu-section-title">
+                                <i class="fas fa-universal-access me-2"></i>
+                                ACCESIBILIDAD
+                            </h5>
+                        </li>
+                        <li class="nav-item">
+                            <div class="nav-link" style="cursor: default;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-volume-up me-2"></i>
+                                    <div>
+                                        <strong>Lector por Texto</strong>
+                                        <p class="mb-0" style="font-size: 0.8em; color: #666;">
+                                            Activa el lector para que lea el texto al pasar el mouse
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="nav-link" style="cursor: default;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-microphone me-2"></i>
+                                    <div>
+                                        <strong>Navegación por Voz</strong>
+                                        <p class="mb-0" style="font-size: 0.8em; color: #666;">
+                                            Usa comandos de voz para navegar y escribir
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="nav-link" style="cursor: default;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-palette me-2"></i>
+                                    <div>
+                                        <strong>Daltonismo</strong>
+                                        <p class="mb-0" style="font-size: 0.8em; color: #666;">
+                                            Adapta los colores para diferentes tipos de daltonismo
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container" style="color: black;">
+            &copy; 2024 - AeroLinea - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/vozPorTexto.js" asp-append-version="true"></script>
+    <script src="~/js/vozNavegacion.js" asp-append-version="true"></script>
+    <script src="~/js/daltonismo.js" asp-append-version="true"></script>
+    <script>
+        // Crear partículas flotantes para el menú
+        function createMenuParticles() {
+            const particlesContainer = document.getElementById('menuParticles');
+            const particleCount = 15;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'menu-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 8 + 3 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const menuOptions = document.getElementById('menuOptions');
+            const menuOverlay = document.getElementById('menuOverlay');
+            
+            // Crear partículas del menú
+            createMenuParticles();
+            
+            function openMenu() {
+                menuOptions.classList.add('show');
+                menuOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                hamburger.setAttribute('aria-expanded', 'true');
+                hamburger.querySelector('i').style.transform = 'rotate(180deg)';
+            }
+
+            function closeMenuInternal() {
+                menuOptions.classList.remove('show');
+                menuOverlay.classList.remove('show');
+                document.body.style.overflow = '';
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.querySelector('i').style.transform = 'rotate(0deg)';
+            }
+
+            function toggleMenu(e) {
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+
+                if (menuOptions.classList.contains('show')) {
+                    closeMenuInternal();
+                } else {
+                    openMenu();
+                }
+            }
+            
+            hamburger.addEventListener('click', toggleMenu);
+            menuOverlay.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeMenuInternal();
+            });
+
+            // Función para inicializar daltonismo
+            function initializeDaltonism() {
+                const isEnabled = localStorage.getItem('daltonismEnabled') === 'true';
+                const daltonismType = localStorage.getItem('daltonismType') || 'default';
+                
+                if (daltonismToggle) {
+                    daltonismToggle.checked = isEnabled;
+                    if (isEnabled) {
+                        daltonismDropdown.style.display = 'block';
+                        // Actualizar texto del dropdown
+                        updateDropdownText(daltonismType);
+                        // Aplicar filtro si no es default
+                        if (daltonismType !== 'default') {
+                            applyDaltonismFilter(daltonismType);
+                        }
+                    }
+                }
+            }
+
+            // Función para actualizar texto del dropdown
+            function updateDropdownText(daltonismType) {
+                const typeNames = {
+                    'default': 'Por defecto',
+                    'protanopia': 'Protanopía (Ceguera al Rojo)',
+                    'protanomaly': 'Protanomalía (Debilidad al Rojo)',
+                    'deuteranopia': 'Deuteranopía (Ceguera al Verde)',
+                    'deuteranomaly': 'Deuteranomalía (Debilidad al Verde)',
+                    'tritanopia': 'Tritanopía (Ceguera al Azul)',
+                    'tritanomaly': 'Tritanomalía (Debilidad al Azul)',
+                    'achromatopsia': 'Acromatopsia (Monocromatismo)'
+                };
+                if (daltonismOptionsDropdown) {
+                    daltonismOptionsDropdown.textContent = typeNames[daltonismType] || 'Seleccionar tipo';
+                }
+            }
+
+            // Manejo del dropdown de daltonismo
+            const daltonismToggle = document.getElementById('daltonismToggle');
+            const daltonismDropdown = document.getElementById('daltonismDropdown');
+            const daltonismOptionsDropdown = document.getElementById('daltonismOptionsDropdown');
+            const daltonismMenu = document.getElementById('daltonismMenu');
+
+            // Inicializar daltonismo desde localStorage (despues de declarar referencias)
+            initializeDaltonism();
+
+            if (daltonismToggle && daltonismDropdown) {
+                daltonismToggle.addEventListener('change', function() {
+                    if (this.checked) {
+                        daltonismDropdown.style.display = 'block';
+                        // Aplicar el filtro actual si hay uno seleccionado
+                        const currentType = localStorage.getItem('daltonismType') || 'default';
+                        if (currentType !== 'default') {
+                            applyDaltonismFilter(currentType);
+                        }
+                    } else {
+                        daltonismDropdown.style.display = 'none';
+                        // Restaurar a por defecto cuando se desactiva
+                        applyDaltonismFilter('default');
+                        localStorage.setItem('daltonismEnabled', 'false');
+                    }
+                });
+            }
+
+            if (daltonismOptionsDropdown && daltonismMenu) {
+                function openDaltonismMenu() {
+                    daltonismMenu.classList.add('show');
+                    daltonismMenu.style.display = 'block';
+                    daltonismOptionsDropdown.setAttribute('aria-expanded', 'true');
+                }
+
+                function closeDaltonismMenu() {
+                    daltonismMenu.classList.remove('show');
+                    daltonismMenu.style.display = 'none';
+                    daltonismOptionsDropdown.setAttribute('aria-expanded', 'false');
+                }
+
+                daltonismOptionsDropdown.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const isOpen = daltonismMenu.classList.contains('show');
+                    if (isOpen) {
+                        closeDaltonismMenu();
+                    } else {
+                        openDaltonismMenu();
+                    }
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!daltonismDropdown.contains(e.target)) {
+                        closeDaltonismMenu();
+                    }
+                });
+
+                // Manejar selección de opciones de daltonismo
+                const daltonismItems = daltonismMenu.querySelectorAll('.dropdown-item');
+                daltonismItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const daltonismType = this.getAttribute('data-daltonism');
+                        
+                        // Actualizar el texto del botón
+                        daltonismOptionsDropdown.textContent = this.textContent;
+                        
+                        // Aplicar el filtro de daltonismo
+                        applyDaltonismFilter(daltonismType);
+                        
+                        // Cerrar opciones inmediatamente tras seleccionar
+                        closeDaltonismMenu();
+                        
+                        console.log('Tipo de daltonismo seleccionado:', daltonismType);
+                    });
+                });
+            }
+
+            // Función para aplicar filtro de daltonismo
+            function applyDaltonismFilter(daltonismType) {
+                console.log('Aplicando filtro de daltonismo:', daltonismType);
+                
+                // Remover todas las clases de daltonismo del body
+                document.body.classList.remove(
+                    'daltonismo-protanopia',
+                    'daltonismo-protanomaly',
+                    'daltonismo-deuteranopia',
+                    'daltonismo-deuteranomaly',
+                    'daltonismo-tritanopia',
+                    'daltonismo-tritanomaly',
+                    'daltonismo-achromatopsia',
+                    'daltonismo-default'
+                );
+                
+                // Aplicar la clase correspondiente
+                if (daltonismType !== 'default') {
+                    document.body.classList.add(`daltonismo-${daltonismType}`);
+                    console.log(`Clase aplicada: daltonismo-${daltonismType}`);
+                } else {
+                    console.log('Restaurando colores por defecto');
+                }
+                
+                // Guardar en localStorage
+                localStorage.setItem('daltonismType', daltonismType);
+                localStorage.setItem('daltonismEnabled', 'true');
+                
+                // Forzar repaint del body para asegurar que el filtro se aplique
+                document.body.style.display = 'none';
+                document.body.offsetHeight; // Trigger reflow
+                document.body.style.display = '';
+                
+                console.log('Filtro aplicado. Clases del body:', document.body.className);
+            }
+        });
+
+        function closeMenu() {
+            const menuOptions = document.getElementById('menuOptions');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const hamburger = document.querySelector('.hamburger');
+            const icon = hamburger.querySelector('i');
+            
+            menuOptions.classList.remove('show');
+            menuOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+            hamburger.setAttribute('aria-expanded', 'false');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

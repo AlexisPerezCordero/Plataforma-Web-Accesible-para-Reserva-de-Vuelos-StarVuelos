@@ -169,3 +169,10 @@ El proyecto fue desarrollado considerando estándares y buenas prácticas de ing
 - OWASP Top 10
 - Arquitectura MVC
 - Scrum
+
+**Aldahir Alexis Perez Cordero**
+
+Desarrollador web:
+
+- LinkedIn: https://www.linkedin.com/in/aldahir-perez-cordero-178b51361/
+- GitHub: https://github.com/AlexisPerezCordero
